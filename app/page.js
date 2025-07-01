@@ -1,14 +1,16 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 
 export default function Home() {
   const [prompt, setPrompt] = useState('')
   const [response, setResponse] = useState(null)
   const [loading, setLoading] = useState(false)
+  const textareaRef = useRef(null)
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
+  const handleSubmit = async () => {
+    if (!prompt.trim()) return
+
     setLoading(true)
     setResponse(null)
 
@@ -29,26 +31,28 @@ export default function Home() {
     }
   }
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      handleSubmit()
+    }
+  }
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-gray-100 dark:bg-gray-900 p-4">
       <div className="w-full max-w-2xl mx-auto">
         <h1 className="text-4xl font-bold mb-8 text-center text-gray-800 dark:text-white">Chat AI</h1>
-        <form onSubmit={handleSubmit} className="w-full">
+        <div className="w-full">
           <textarea
+            ref={textareaRef}
             className="w-full p-4 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
             rows="4"
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
-            placeholder="Enter your prompt..."
+            onKeyDown={handleKeyDown}
+            placeholder="Enter your prompt... (Shift+Enter for new line)"
           />
-          <button
-            type="submit"
-            className="w-full mt-4 p-3 bg-blue-600 text-white rounded-lg font-semibold shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-gray-400 dark:disabled:bg-gray-600"
-            disabled={loading || !prompt.trim()}
-          >
-            {loading ? 'Loading...' : 'Send'}
-          </button>
-        </form>
+        </div>
         {loading && (
           <div className="mt-8 flex justify-center items-center">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
