@@ -52,6 +52,14 @@ export default function Home() {
             onKeyDown={handleKeyDown}
             placeholder="Enter your prompt... (Shift+Enter for new line)"
           />
+          <button
+            type="button"
+            onClick={handleSubmit}
+            className="w-full mt-4 p-3 bg-blue-600 text-white rounded-lg font-semibold shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-gray-400 dark:disabled:bg-gray-600"
+            disabled={loading || !prompt.trim()}
+          >
+            {loading ? 'Loading...' : 'Send'}
+          </button>
         </div>
         {loading && (
           <div className="mt-8 flex justify-center items-center">
