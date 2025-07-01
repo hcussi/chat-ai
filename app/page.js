@@ -39,8 +39,11 @@ export default function Home() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-blue-50 p-4">
-      <div className="w-full max-w-2xl mx-auto">
+    <main 
+      className="flex min-h-screen flex-col items-center justify-center p-4 bg-cover bg-center"
+      style={{ backgroundImage: "url('/background.jpg')" }} // Replace with your image URL
+    >
+      <div className="w-full max-w-2xl mx-auto bg-white bg-opacity-80 p-8 rounded-lg shadow-lg">
         <h1 className="text-4xl font-bold mb-8 text-center text-blue-800">Chat AI</h1>
         <div className="w-full">
           <textarea
