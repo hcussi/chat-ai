@@ -1,6 +1,9 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
+import showdown from 'showdown'
+
+const converter = new showdown.Converter()
 
 export default function Home() {
   const [prompt, setPrompt] = useState('')
@@ -98,7 +101,10 @@ export default function Home() {
                     item.response.error ? (
                       <p className="text-red-500">{item.response.error}</p>
                     ) : (
-                      <p className="text-black">{item.response.text}</p>
+                      <div
+                        className="text-black"
+                        dangerouslySetInnerHTML={{ __html: converter.makeHtml(item.response.text) }}
+                      />
                     )
                   ) : (
                     <div className="flex items-center space-x-2">
