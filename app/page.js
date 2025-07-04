@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Header from '../components/Header'
 import Input from '../components/Input'
 import History from '../components/History'
+import Loading from '../components/Loading'
 
 export default function Home() {
   const [prompt, setPrompt] = useState('')
@@ -90,6 +91,7 @@ export default function Home() {
       className="min-h-screen bg-cover bg-center grid grid-cols-3 gap-4 p-4"
       style={{ backgroundImage: "url('/background.jpg')" }} // Replace with your image URL
     >
+      {loading && <Loading />}
       <div className="col-span-1"></div>
       <div className="col-span-1 flex flex-col h-full">
         <Header stats={stats} />
@@ -102,7 +104,7 @@ export default function Home() {
             handleKeyDown={handleKeyDown}
           />
         </div>
-        <History history={history} loading={loading} />
+        <History history={history} />
       </div>
       <div className="col-span-1"></div>
     </main>

@@ -1,4 +1,5 @@
 import showdown from 'showdown'
+import Loading from './Loading'
 
 const converter = new showdown.Converter()
 
@@ -20,7 +21,7 @@ export default function History({ history, loading }) {
             </div>
           </div>
         ))}
-        {loading && <p className="text-black">AI is thinking...</p>}
+        {loading && <Loading />}
       </div>
     </div>
   )

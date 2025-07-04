@@ -37,7 +37,7 @@ The primary goal of this product is to provide a simple, intuitive, and responsi
 
 ## 5. Non-Functional Requirements
 
--   **Performance:** The application should be fast and responsive, with a loading indicator to provide feedback to the user while waiting for the AI's response.
+-   **Loading Indicator:** A full-screen overlay with a loading spinner and a blurred background will be displayed while waiting for the AI's response.
 -   **Usability:** The application should be easy to use, with a clear and intuitive interface.
 -   **Scalability:** The application should be able to handle a large number of users, with the backend API being able to handle a high volume of requests.
 

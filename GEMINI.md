@@ -101,7 +101,10 @@ This phase involved several cycles of user feedback and bug fixing.
 -   **Commit:** `feat(layout): revert to three-column layout`
 -   **Request:** Refactor the main page into smaller, more manageable components, each with its own corresponding test file.
 -   **Action:** Created a `components` directory and extracted the `Header`, `Input`, and `History` components.
--   **Commit:** `refactor: break down page into smaller components` (This will be the next commit)
+-   **Commit:** `refactor: break down page into smaller components`
+-   **Request:** Create a dedicated `Loading` component with a full-screen overlay and a blurred background.
+-   **Action:** Created a `Loading` component and updated the main page to render it as an overlay.
+-   **Commit:** `feat: add full-screen loading component` (This will be the next commit)
 
 ### 6. Documentation
 
