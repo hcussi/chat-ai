@@ -182,7 +182,7 @@ export default function Home() {
             New Chat
           </button>
           {chats.sort((a, b) => a.createdAt - b.createdAt).map(chat => (
-            <div key={chat.id} onClick={() => setActiveChatId(chat.id)} className={`p-2 rounded-lg cursor-pointer ${activeChatId === chat.id ? 'bg-blue-200' : ''}`}>
+            <div key={chat.id} onClick={() => setActiveChatId(chat.id)} className={`p-2 rounded-lg cursor-pointer ${activeChatId === chat.id ? 'bg-blue-500 text-white border-2 border-white' : ''}`}>
               <ChatManager chatName={chat.name} setChatName={(name) => setChatName(name)} clearChat={() => clearChat(chat.id)} />
             </div>
           ))}

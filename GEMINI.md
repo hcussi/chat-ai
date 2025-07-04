@@ -118,7 +118,10 @@ This phase involved several cycles of user feedback and bug fixing.
 -   **Commit:** `feat(layout): move title and status bar`
 -   **Request:** Add titles to the chat list and prompt input.
 -   **Action:** Added titles to the left and center columns.
--   **Commit:** `feat(layout): add titles to columns` (This will be the next commit)
+-   **Commit:** `feat(layout): add titles to columns`
+-   **Request:** Add a distinct style for the currently selected chat.
+-   **Action:** Added a blue background and a white border to the selected chat.
+-   **Commit:** `style: add selected chat style` (This will be the next commit)
 
 ### 6. Documentation
 
