@@ -9,6 +9,7 @@ export default function Home() {
   const [prompt, setPrompt] = useState('')
   const [history, setHistory] = useState([])
   const [loading, setLoading] = useState(false)
+  const [stats, setStats] = useState(null)
   const textareaRef = useRef(null)
   const chatEndRef = useRef(null)
 
@@ -25,6 +26,10 @@ export default function Home() {
     if (savedHistory) {
       setHistory(JSON.parse(savedHistory))
     }
+    const savedStats = localStorage.getItem('chatStats')
+    if (savedStats) {
+      setStats(JSON.parse(savedStats))
+    }
   }, [])
 
   useEffect(() => {
@@ -32,6 +37,12 @@ export default function Home() {
       localStorage.setItem('chatHistory', JSON.stringify(history))
     }
   }, [history])
+
+  useEffect(() => {
+    if (stats) {
+      localStorage.setItem('chatStats', JSON.stringify(stats))
+    }
+  }, [stats])
 
   const handleSubmit = async () => {
     if (!prompt.trim()) return
@@ -41,6 +52,7 @@ export default function Home() {
     setHistory(newHistory)
     setPrompt('')
     setLoading(true)
+    setStats(null)
 
     try {
       const res = await fetch('/api/chat', {
@@ -60,6 +72,13 @@ export default function Home() {
       const modelTimestamp = new Date().toLocaleTimeString([], { minute: '2-digit', hour: '2-digit', second: '2-digit', hour12: false })
       const updatedHistory = [...newHistory, { role: 'model', parts: [{ text: data.text }], timestamp: modelTimestamp }]
       setHistory(updatedHistory)
+      setStats({
+        model: data.model,
+        inputTokens: data.usage.inputTokens,
+        outputTokens: data.usage.outputTokens,
+        totalTokens: data.usage.totalTokens,
+        time: data.time,
+      })
     } catch (error) {
       const modelTimestamp = new Date().toLocaleTimeString([], { minute: '2-digit', hour: '2-digit', second: '2-digit', hour12: false })
       const updatedHistory = [...newHistory, { role: 'model', parts: [{ text: error.message }], timestamp: modelTimestamp }]
@@ -77,15 +96,27 @@ export default function Home() {
   }
 
   return (
-    <main 
-      className="min-h-screen bg-cover bg-center grid grid-cols-3 gap-4 p-4"
+    <main
+      className="min-h-screen bg-cover bg-center p-4"
       style={{ backgroundImage: "url('/background.jpg')" }} // Replace with your image URL
     >
-      <div className="col-span-1"></div>
-      <div className="col-span-1 flex flex-col h-full">
-        <div className="w-full max-w-2xl mx-auto bg-white bg-opacity-80 p-8 rounded-lg shadow-lg">
-          <h1 className="text-4xl font-bold mb-8 text-center text-black">Chat AI</h1>
-          <div className="w-full">
+      <div className="w-full max-w-4xl mx-auto">
+        <div className="w-full bg-white bg-opacity-80 p-8 rounded-lg shadow-lg sticky top-4 z-10">
+          <h1 className="text-4xl font-bold mb-4 text-center text-black">Chat AI</h1>
+          {stats && (
+            <div className="w-full bg-gray-800 text-white p-2 rounded-lg shadow-lg text-xs font-mono">
+              <div className="flex justify-between">
+                <p>Model: {stats.model}</p>
+                <p>Time: {stats.time}ms</p>
+              </div>
+              <div className="flex justify-between">
+                <p>Input Tokens: {stats.inputTokens}</p>
+                <p>Output Tokens: {stats.outputTokens}</p>
+                <p>Total Tokens: {stats.totalTokens}</p>
+              </div>
+            </div>
+          )}
+          <div className="w-full mt-4">
             <textarea
               ref={textareaRef}
               className="w-full p-4 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
@@ -105,7 +136,7 @@ export default function Home() {
             </button>
           </div>
         </div>
-        <div className="w-full max-w-2xl mx-auto bg-white bg-opacity-80 p-8 rounded-lg shadow-lg mt-4 flex-grow overflow-y-auto">
+        <div className="w-full bg-white bg-opacity-80 p-8 rounded-lg shadow-lg mt-4 flex-grow overflow-y-auto">
           <div className="flex-grow">
             {history.map((item, index) => (
               <div key={index} className="mb-4">
@@ -126,7 +157,6 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <div className="col-span-1"></div>
     </main>
   )
 }

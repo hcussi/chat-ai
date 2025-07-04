@@ -92,11 +92,17 @@ This phase involved several cycles of user feedback and bug fixing.
 -   **Request:** Render the API's Markdown response as HTML.
 -   **Action:** Installed the `showdown` library and used it to convert the response text to HTML before rendering it with `dangerouslySetInnerHTML`.
 -   **Commit:** `feat: add markdown parser and fix font color`
+-   **Request:** Add a status bar with usage statistics.
+-   **Action:** Modified the backend to return usage metadata and added a status bar component to the frontend. The stats are persisted in `localStorage`.
+-   **Request:** Refine the layout to have a single centered column with a sticky header containing the title, status, and input controls.
+-   **Action:** Refactored the layout and CSS. Debugged a `position: sticky` issue by restructuring the component hierarchy.
+-   **Commit:** `feat(layout): implement sticky header and single-column layout` (This will be the next commit)
 
 ### 6. Documentation
 
 -   **Request:** Generate a `PRD.md` file based on the project.
 -   **Action:** Created a Product Requirements Document in Markdown format, summarizing the application's features and requirements.
+-   **Commit:** `docs: add PRD and update GEMINI.md`
 
 ## Final State
 

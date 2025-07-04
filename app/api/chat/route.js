@@ -11,10 +11,22 @@ export async function POST(req) {
   })
 
   try {
+    const startTime = Date.now()
     const result = await chat.sendMessage(prompt)
+    const endTime = Date.now()
     const response = await result.response
     const text = await response.text()
-    return new Response(JSON.stringify({ text }), {
+    const usageMetadata = response.usageMetadata
+    return new Response(JSON.stringify({ 
+      text,
+      model: process.env.GEMINI_MODEL,
+      usage: {
+        inputTokens: usageMetadata.promptTokenCount,
+        outputTokens: usageMetadata.candidatesTokenCount,
+        totalTokens: usageMetadata.totalTokenCount,
+      },
+      time: endTime - startTime,
+     }), {
       headers: { 'Content-Type': 'application/json' },
     })
   } catch (error) {

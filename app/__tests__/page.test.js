@@ -72,7 +72,15 @@ describe('Home', () => {
   })
 
   it('shows the response after the form is submitted', async () => {
-    const mockResponse = { text: 'This is a test response.' }
+    const mockResponse = { 
+      text: 'This is a test response.',
+      usage: {
+        inputTokens: 1,
+        outputTokens: 1,
+        totalTokens: 2,
+      },
+      time: 100,
+    }
     fetch.mockResolvedValueOnce({
       ok: true,
       json: async () => mockResponse,
@@ -106,7 +114,15 @@ describe('Home', () => {
   })
 
   it('renders markdown in the response', async () => {
-    const mockResponse = { text: '**bold text**' }
+    const mockResponse = { 
+      text: '**bold text**',
+      usage: {
+        inputTokens: 1,
+        outputTokens: 1,
+        totalTokens: 2,
+      },
+      time: 100,
+    }
     fetch.mockResolvedValueOnce({
       ok: true,
       json: async () => mockResponse,
@@ -127,7 +143,17 @@ describe('Home', () => {
   })
 
   it('saves chat history to localStorage', async () => {
-    const mockResponse = { text: 'response' }
+    jest.spyOn(Date.prototype, 'toLocaleTimeString').mockReturnValue('12:00:00')
+
+    const mockResponse = { 
+      text: 'response',
+      usage: {
+        inputTokens: 1,
+        outputTokens: 1,
+        totalTokens: 2,
+      },
+      time: 100,
+    }
     fetch.mockResolvedValueOnce({
       ok: true,
       json: async () => mockResponse,
@@ -144,8 +170,8 @@ describe('Home', () => {
       expect(localStorage.setItem).toHaveBeenCalledWith(
         'chatHistory',
         JSON.stringify([
-          { role: 'user', parts: [{ text: 'prompt' }] },
-          { role: 'model', parts: [{ text: 'response' }] },
+          { role: 'user', parts: [{ text: 'prompt' }], timestamp: '12:00:00' },
+          { role: 'model', parts: [{ text: 'response' }], timestamp: '12:00:00' },
         ])
       )
     })
