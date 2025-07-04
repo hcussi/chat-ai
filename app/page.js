@@ -115,6 +115,7 @@ export default function Home() {
                 </div>
               </div>
             ))}
+            {loading && <p className="text-black">AI is thinking...</p>}
             <div ref={chatEndRef} />
           </div>
         </div>

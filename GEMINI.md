@@ -13,7 +13,11 @@ The final application is a web-based chat interface that interacts with the Goog
 -   **Styling:** Tailwind CSS
 -   **API:** Google Generative AI (`@google/generative-ai`)
 -   **Markdown Parsing:** `showdown`
--   **Testing:** Jest, React Testing Library
+- **Testing:** Jest, React Testing Library
+
+## Development Process
+
+-   **Unit Testing:** Before committing any new feature, corresponding unit tests must be added to cover it.
 
 ## Development Chronology
 
