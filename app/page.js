@@ -11,15 +11,6 @@ export default function Home() {
   const [loading, setLoading] = useState(false)
   const [stats, setStats] = useState(null)
   const textareaRef = useRef(null)
-  const chatEndRef = useRef(null)
-
-  const scrollToBottom = () => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" })
-  }
-
-  useEffect(() => {
-    scrollToBottom()
-  }, [history]);
 
   useEffect(() => {
     const savedHistory = localStorage.getItem('chatHistory')
@@ -97,10 +88,11 @@ export default function Home() {
 
   return (
     <main
-      className="min-h-screen bg-cover bg-center p-4"
+      className="min-h-screen bg-cover bg-center grid grid-cols-3 gap-4 p-4"
       style={{ backgroundImage: "url('/background.jpg')" }} // Replace with your image URL
     >
-      <div className="w-full max-w-4xl mx-auto">
+      <div className="col-span-1"></div>
+      <div className="col-span-1 flex flex-col h-full">
         <div className="w-full bg-white bg-opacity-80 p-8 rounded-lg shadow-lg sticky top-4 z-10">
           <h1 className="text-4xl font-bold mb-4 text-center text-black">Chat AI</h1>
           {stats && (
@@ -138,7 +130,7 @@ export default function Home() {
         </div>
         <div className="w-full bg-white bg-opacity-80 p-8 rounded-lg shadow-lg mt-4 flex-grow overflow-y-auto">
           <div className="flex-grow">
-            {history.map((item, index) => (
+            {history.slice().reverse().map((item, index) => (
               <div key={index} className="mb-4">
                 <div className={`p-4 rounded-lg ${item.role === 'user' ? 'bg-blue-100' : 'bg-gray-100'}`}>
                   <div className="flex justify-between">
@@ -153,10 +145,10 @@ export default function Home() {
               </div>
             ))}
             {loading && <p className="text-black">AI is thinking...</p>}
-            <div ref={chatEndRef} />
           </div>
         </div>
       </div>
+      <div className="col-span-1"></div>
     </main>
   )
 }

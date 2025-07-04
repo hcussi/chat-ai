@@ -96,7 +96,9 @@ This phase involved several cycles of user feedback and bug fixing.
 -   **Action:** Modified the backend to return usage metadata and added a status bar component to the frontend. The stats are persisted in `localStorage`.
 -   **Request:** Refine the layout to have a single centered column with a sticky header containing the title, status, and input controls.
 -   **Action:** Refactored the layout and CSS. Debugged a `position: sticky` issue by restructuring the component hierarchy.
--   **Commit:** `feat(layout): implement sticky header and single-column layout` (This will be the next commit)
+-   **Request:** Revert to the three-column layout.
+-   **Action:** Re-implemented the three-column layout.
+-   **Commit:** `feat(layout): revert to three-column layout` (This will be the next commit)
 
 ### 6. Documentation
 
