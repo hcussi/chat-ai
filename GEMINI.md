@@ -104,7 +104,10 @@ This phase involved several cycles of user feedback and bug fixing.
 -   **Commit:** `refactor: break down page into smaller components`
 -   **Request:** Create a dedicated `Loading` component with a full-screen overlay and a blurred background.
 -   **Action:** Created a `Loading` component and updated the main page to render it as an overlay.
--   **Commit:** `feat: add full-screen loading component` (This will be the next commit)
+-   **Commit:** `feat: add full-screen loading component`
+-   **Request:** Add the ability to name, rename, and clear the chat session.
+-   **Action:** Created a `ChatManager` component to handle chat naming and clearing. Used `react-icons` to display the edit and delete icons.
+-   **Commit:** `feat: add chat management features` (This will be the next commit)
 
 ### 6. Documentation
 
