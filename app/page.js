@@ -1,16 +1,15 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
-import showdown from 'showdown'
-
-const converter = new showdown.Converter()
+import { useState, useEffect } from 'react'
+import Header from '../components/Header'
+import Input from '../components/Input'
+import History from '../components/History'
 
 export default function Home() {
   const [prompt, setPrompt] = useState('')
   const [history, setHistory] = useState([])
   const [loading, setLoading] = useState(false)
   const [stats, setStats] = useState(null)
-  const textareaRef = useRef(null)
 
   useEffect(() => {
     const savedHistory = localStorage.getItem('chatHistory')
@@ -93,60 +92,17 @@ export default function Home() {
     >
       <div className="col-span-1"></div>
       <div className="col-span-1 flex flex-col h-full">
-        <div className="w-full bg-white bg-opacity-80 p-8 rounded-lg shadow-lg sticky top-4 z-10">
-          <h1 className="text-4xl font-bold mb-4 text-center text-black">Chat AI</h1>
-          {stats && (
-            <div className="w-full bg-gray-800 text-white p-2 rounded-lg shadow-lg text-xs font-mono">
-              <div className="flex justify-between">
-                <p>Model: {stats.model}</p>
-                <p>Time: {stats.time}ms</p>
-              </div>
-              <div className="flex justify-between">
-                <p>Input Tokens: {stats.inputTokens}</p>
-                <p>Output Tokens: {stats.outputTokens}</p>
-                <p>Total Tokens: {stats.totalTokens}</p>
-              </div>
-            </div>
-          )}
-          <div className="w-full mt-4">
-            <textarea
-              ref={textareaRef}
-              className="w-full p-4 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
-              rows="4"
-              value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Enter your prompt... (Shift+Enter for new line)"
-            />
-            <button
-              type="button"
-              onClick={handleSubmit}
-              className="w-full mt-4 p-4 bg-blue-500 text-white rounded-xl font-semibold shadow-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-gray-300"
-              disabled={loading || !prompt.trim()}
-            >
-              {loading ? 'Sending...' : 'Send'}
-            </button>
-          </div>
+        <Header stats={stats} />
+        <div className="w-full bg-white bg-opacity-80 p-8 rounded-lg shadow-lg mt-4">
+          <Input
+            prompt={prompt}
+            setPrompt={setPrompt}
+            loading={loading}
+            handleSubmit={handleSubmit}
+            handleKeyDown={handleKeyDown}
+          />
         </div>
-        <div className="w-full bg-white bg-opacity-80 p-8 rounded-lg shadow-lg mt-4 flex-grow overflow-y-auto">
-          <div className="flex-grow">
-            {history.slice().reverse().map((item, index) => (
-              <div key={index} className="mb-4">
-                <div className={`p-4 rounded-lg ${item.role === 'user' ? 'bg-blue-100' : 'bg-gray-100'}`}>
-                  <div className="flex justify-between">
-                    <p className="font-bold text-black font-orbitron">{item.role === 'user' ? 'You:' : 'AI:'}</p>
-                    <p className="text-xs text-gray-500 font-mono">{item.timestamp}</p>
-                  </div>
-                  <div
-                    className="text-black"
-                    dangerouslySetInnerHTML={{ __html: converter.makeHtml(item.parts[0].text) }}
-                  />
-                </div>
-              </div>
-            ))}
-            {loading && <p className="text-black">AI is thinking...</p>}
-          </div>
-        </div>
+        <History history={history} loading={loading} />
       </div>
       <div className="col-span-1"></div>
     </main>

@@ -33,7 +33,7 @@ The primary goal of this product is to provide a simple, intuitive, and responsi
 
 -   **Framework:** The application will be built using Next.js.
 -   **API:** The application will use the Google Generative AI API.
--   **Styling:** The application will be styled using Tailwind CSS.
+-   **Component-Based Architecture:** The application is structured into reusable components for the header, input, and history sections, each with its own set of unit tests.
 
 ## 5. Non-Functional Requirements
 

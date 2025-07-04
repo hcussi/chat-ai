@@ -98,7 +98,10 @@ This phase involved several cycles of user feedback and bug fixing.
 -   **Action:** Refactored the layout and CSS. Debugged a `position: sticky` issue by restructuring the component hierarchy.
 -   **Request:** Revert to the three-column layout.
 -   **Action:** Re-implemented the three-column layout.
--   **Commit:** `feat(layout): revert to three-column layout` (This will be the next commit)
+-   **Commit:** `feat(layout): revert to three-column layout`
+-   **Request:** Refactor the main page into smaller, more manageable components, each with its own corresponding test file.
+-   **Action:** Created a `components` directory and extracted the `Header`, `Input`, and `History` components.
+-   **Commit:** `refactor: break down page into smaller components` (This will be the next commit)
 
 ### 6. Documentation
 
