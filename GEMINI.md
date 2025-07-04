@@ -107,7 +107,10 @@ This phase involved several cycles of user feedback and bug fixing.
 -   **Commit:** `feat: add full-screen loading component`
 -   **Request:** Add the ability to name, rename, and clear the chat session.
 -   **Action:** Created a `ChatManager` component to handle chat naming and clearing. Used `react-icons` to display the edit and delete icons.
--   **Commit:** `feat: add chat management features` (This will be the next commit)
+-   **Commit:** `feat: add chat management features`
+-   **Request:** Add the ability to have multiple chats, with validation for duplicate names and the ability to delete chats (but not the last one).
+-   **Action:** Refactored the state management to handle multiple chats, and updated the UI to display a list of chats.
+-   **Commit:** `feat: add multi-chat support` (This will be the next commit)
 
 ### 6. Documentation
 

@@ -20,53 +20,66 @@ interface Stats {
   totalTokens: number;
 }
 
+interface Chat {
+  id: string;
+  name: string;
+  history: HistoryItem[];
+  stats: Stats | null;
+  createdAt: number;
+}
+
 export default function Home() {
   const [prompt, setPrompt] = useState<string>('')
-  const [history, setHistory] = useState<HistoryItem[]>([])
+  const [chats, setChats] = useState<Chat[]>([])
+  const [activeChatId, setActiveChatId] = useState<string | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
-  const [stats, setStats] = useState<Stats | null>(null)
-  const [chatName, setChatName] = useState<string>('My Chat')
 
   useEffect(() => {
-    const savedHistory = localStorage.getItem('chatHistory')
-    if (savedHistory) {
-      setHistory(JSON.parse(savedHistory))
+    const savedChats = localStorage.getItem('chats')
+    if (savedChats) {
+      setChats(JSON.parse(savedChats))
+    } else {
+      const newChat: Chat = {
+        id: Date.now().toString(),
+        name: 'My Chat',
+        history: [],
+        stats: null,
+        createdAt: Date.now(),
+      }
+      setChats([newChat])
+      setActiveChatId(newChat.id)
     }
-    const savedStats = localStorage.getItem('chatStats')
-    if (savedStats) {
-      setStats(JSON.parse(savedStats))
-    }
-    const savedChatName = localStorage.getItem('chatName')
-    if (savedChatName) {
-      setChatName(savedChatName)
+    const savedActiveChatId = localStorage.getItem('activeChatId')
+    if (savedActiveChatId) {
+      setActiveChatId(savedActiveChatId)
     }
   }, [])
 
   useEffect(() => {
-    if (history.length > 0) {
-      localStorage.setItem('chatHistory', JSON.stringify(history))
+    if (chats.length > 0) {
+      localStorage.setItem('chats', JSON.stringify(chats))
     }
-  }, [history])
+  }, [chats])
 
   useEffect(() => {
-    if (stats) {
-      localStorage.setItem('chatStats', JSON.stringify(stats))
+    if (activeChatId) {
+      localStorage.setItem('activeChatId', activeChatId)
     }
-  }, [stats])
+  }, [activeChatId])
 
-  useEffect(() => {
-    localStorage.setItem('chatName', chatName)
-  }, [chatName])
+  const activeChat = chats.find(chat => chat.id === activeChatId)
 
   const handleSubmit = async () => {
-    if (!prompt.trim()) return
+    if (!prompt.trim() || !activeChat) return
 
     const timestamp = new Date().toLocaleTimeString([], { minute: '2-digit', hour: '2-digit', second: '2-digit', hour12: false })
-    const newHistory = [...history, { role: 'user', parts: [{ text: prompt }], timestamp }]
-    setHistory(newHistory)
+    const newHistory = [...activeChat.history, { role: 'user', parts: [{ text: prompt }], timestamp }]
+    const updatedChats = chats.map(chat =>
+      chat.id === activeChatId ? { ...chat, history: newHistory } : chat
+    )
+    setChats(updatedChats)
     setPrompt('')
     setLoading(true)
-    setStats(null)
 
     try {
       const res = await fetch('/api/chat', {
@@ -85,18 +98,23 @@ export default function Home() {
       const data = await res.json()
       const modelTimestamp = new Date().toLocaleTimeString([], { minute: '2-digit', hour: '2-digit', second: '2-digit', hour12: false })
       const updatedHistory = [...newHistory, { role: 'model', parts: [{ text: data.text }], timestamp: modelTimestamp }]
-      setHistory(updatedHistory)
-      setStats({
-        model: data.model,
-        inputTokens: data.usage.inputTokens,
-        outputTokens: data.usage.outputTokens,
-        totalTokens: data.usage.totalTokens,
-        time: data.time,
-      })
+      const updatedChatsWithResponse = chats.map(chat =>
+        chat.id === activeChatId ? { ...chat, history: updatedHistory, stats: {
+          model: data.model,
+          inputTokens: data.usage.inputTokens,
+          outputTokens: data.usage.outputTokens,
+          totalTokens: data.usage.totalTokens,
+          time: data.time,
+        } } : chat
+      )
+      setChats(updatedChatsWithResponse)
     } catch (error: any) {
       const modelTimestamp = new Date().toLocaleTimeString([], { minute: '2-digit', hour: '2-digit', second: '2-digit', hour12: false })
       const updatedHistory = [...newHistory, { role: 'model', parts: [{ text: error.message }], timestamp: modelTimestamp }]
-      setHistory(updatedHistory)
+      const updatedChatsWithError = chats.map(chat =>
+        chat.id === activeChatId ? { ...chat, history: updatedHistory } : chat
+      )
+      setChats(updatedChatsWithError)
     } finally {
       setLoading(false)
     }
@@ -109,13 +127,46 @@ export default function Home() {
     }
   }
 
-  const clearChat = () => {
-    setHistory([])
-    setStats(null)
-    setChatName('My Chat')
-    localStorage.removeItem('chatHistory')
-    localStorage.removeItem('chatStats')
-    localStorage.removeItem('chatName')
+  const createNewChat = () => {
+    let newChatName = 'New Chat'
+    let counter = 1
+    while (chats.some(chat => chat.name === newChatName)) {
+      newChatName = `New Chat ${counter}`
+      counter++
+    }
+
+    const newChat: Chat = {
+      id: Date.now().toString(),
+      name: newChatName,
+      history: [],
+      stats: null,
+      createdAt: Date.now(),
+    }
+    setChats([...chats, newChat])
+    setActiveChatId(newChat.id)
+  }
+
+  const setChatName = (name: string) => {
+    if (chats.some(chat => chat.name === name && chat.id !== activeChatId)) {
+      alert('A chat with this name already exists.')
+      return
+    }
+    const updatedChats = chats.map(chat =>
+      chat.id === activeChatId ? { ...chat, name } : chat
+    )
+    setChats(updatedChats)
+  }
+
+  const clearChat = (id: string) => {
+    if (chats.length === 1) {
+      alert("You can't delete the last chat.")
+      return
+    }
+    const updatedChats = chats.filter(chat => chat.id !== id)
+    setChats(updatedChats)
+    if (activeChatId === id) {
+      setActiveChatId(updatedChats.length > 0 ? updatedChats[0].id : null)
+    }
   }
 
   return (
@@ -125,20 +176,31 @@ export default function Home() {
     >
       {loading && <Loading />}
       <div className="col-span-1">
-        <ChatManager chatName={chatName} setChatName={setChatName} clearChat={clearChat} />
+        <button onClick={createNewChat} className="w-full p-2 bg-blue-500 text-white rounded-lg mb-4">
+          New Chat
+        </button>
+        {chats.sort((a, b) => a.createdAt - b.createdAt).map(chat => (
+          <div key={chat.id} onClick={() => setActiveChatId(chat.id)} className={`p-2 rounded-lg cursor-pointer ${activeChatId === chat.id ? 'bg-blue-200' : ''}`}>
+            <ChatManager chatName={chat.name} setChatName={(name) => setChatName(name)} clearChat={() => clearChat(chat.id)} />
+          </div>
+        ))}
       </div>
       <div className="col-span-1 flex flex-col h-full">
-        <Header stats={stats} />
-        <div className="w-full bg-white bg-opacity-80 p-8 rounded-lg shadow-lg mt-4">
-          <Input
-            prompt={prompt}
-            setPrompt={setPrompt}
-            loading={loading}
-            handleSubmit={handleSubmit}
-            handleKeyDown={handleKeyDown}
-          />
-        </div>
-        <History history={history} loading={loading} />
+        {activeChat && (
+          <>
+            <Header stats={activeChat.stats} />
+            <div className="w-full bg-white bg-opacity-80 p-8 rounded-lg shadow-lg mt-4">
+              <Input
+                prompt={prompt}
+                setPrompt={setPrompt}
+                loading={loading}
+                handleSubmit={handleSubmit}
+                handleKeyDown={handleKeyDown}
+              />
+            </div>
+            <History history={activeChat.history} loading={loading} />
+          </>
+        )}
       </div>
       <div className="col-span-1"></div>
     </main>

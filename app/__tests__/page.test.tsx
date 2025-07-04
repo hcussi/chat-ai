@@ -168,23 +168,29 @@ describe('Home', () => {
 
     await waitFor(() => {
       expect(localStorage.setItem).toHaveBeenCalledWith(
-        'chatHistory',
-        JSON.stringify([
-          { role: 'user', parts: [{ text: 'prompt' }], timestamp: '12:00:00' },
-          { role: 'model', parts: [{ text: 'response' }], timestamp: '12:00:00' },
-        ])
+        'chats',
+        expect.stringContaining('prompt')
       )
     })
   })
 
   it('loads chat history from localStorage', () => {
     localStorage.setItem(
-      'chatHistory',
+      'chats',
       JSON.stringify([
-        { role: 'user', parts: [{ text: 'previous prompt' }], timestamp: '12:00:00' },
-        { role: 'model', parts: [{ text: 'previous response' }], timestamp: '12:00:01' },
+        {
+          id: '1',
+          name: 'My Chat',
+          history: [
+            { role: 'user', parts: [{ text: 'previous prompt' }], timestamp: '12:00:00' },
+            { role: 'model', parts: [{ text: 'previous response' }], timestamp: '12:00:01' },
+          ],
+          stats: null,
+          createdAt: Date.now(),
+        },
       ])
     )
+    localStorage.setItem('activeChatId', '1')
 
     render(<Home />)
 

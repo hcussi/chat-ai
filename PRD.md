@@ -26,7 +26,8 @@ The primary goal of this product is to provide a simple, intuitive, and responsi
 
 -   **Layout:** The application will have a three-column layout, with the chat interface in the center column.
 -   **Input:** The user will have a text area to input their prompt. The prompt can be sent by pressing the "Enter" key or by clicking the "Send" button. A new line can be added to the text area by pressing "Shift+Enter".
--   **Chat Management:** The user can name and rename the chat session. The chat name has a maximum length of 50 characters and cannot be empty. The user can also clear the chat history, stats, and name to start a new session. The edit and delete actions are represented by icons.
+-   **Multiple Chats:** The application will support multiple chat sessions. The user can create new chats, switch between them, and delete them. The last remaining chat cannot be deleted.
+-   **Chat Management:** The user can name and rename each chat session. The chat name has a maximum length of 50 characters and cannot be a duplicate of an existing chat name. The user can also clear the chat history, stats, and name to start a new session. The edit and delete actions are represented by icons.
 -   **Styling:** The application will have a light blue, futuristic theme, with a background image.
 
 ### 4.3. Technical Requirements
