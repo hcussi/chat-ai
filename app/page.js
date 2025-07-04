@@ -23,7 +23,7 @@ export default function Home() {
   const handleSubmit = async () => {
     if (!prompt.trim()) return
 
-    const newHistory = [...history, { prompt, response: null }]
+    const newHistory = [...history, { role: 'user', parts: [{ text: prompt }] }]
     setHistory(newHistory)
     setPrompt('')
     setLoading(true)
@@ -34,17 +34,19 @@ export default function Home() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ prompt }),
+        body: JSON.stringify({
+          prompt,
+          history: newHistory.slice(0, -1).map(h => ({
+            role: h.role,
+            parts: h.parts.map(p => ({ text: p.text }))
+          }))
+        }),
       })
       const data = await res.json()
-      const updatedHistory = newHistory.map((item, index) => 
-        index === newHistory.length - 1 ? { ...item, response: data } : item
-      )
+      const updatedHistory = [...newHistory, { role: 'model', parts: [{ text: data.text }] }]
       setHistory(updatedHistory)
     } catch (error) {
-      const updatedHistory = newHistory.map((item, index) =>
-        index === newHistory.length - 1 ? { ...item, response: { error: error.message } } : item
-      )
+      const updatedHistory = [...newHistory, { role: 'model', parts: [{ text: error.message }] }]
       setHistory(updatedHistory)
     } finally {
       setLoading(false)
@@ -91,29 +93,12 @@ export default function Home() {
           <div className="flex-grow">
             {history.map((item, index) => (
               <div key={index} className="mb-4">
-                <div className="p-4 bg-blue-100 rounded-lg">
-                  <p className="font-semibold text-black">You:</p>
-                  <p className="text-black">{item.prompt}</p>
-                </div>
-                <div className="mt-2 p-4 bg-gray-100 rounded-lg">
-                  <p className="font-semibold text-black">AI:</p>
-                  {item.response ? (
-                    item.response.error ? (
-                      <p className="text-red-500">{item.response.error}</p>
-                    ) : (
-                      <div
-                        className="text-black"
-                        dangerouslySetInnerHTML={{ __html: converter.makeHtml(item.response.text) }}
-                      />
-                    )
-                  ) : (
-                    <div className="flex items-center space-x-2">
-                      <div className="w-2 h-2 rounded-full bg-gray-500 animate-pulse"></div>
-                      <div className="w-2 h-2 rounded-full bg-gray-500 animate-pulse [animation-delay:0.2s]"></div>
-                      <div className="w-2 h-2 rounded-full bg-gray-500 animate-pulse [animation-delay:0.4s]"></div>
-                      <span className="text-black">AI is thinking...</span>
-                    </div>
-                  )}
+                <div className={`p-4 rounded-lg ${item.role === 'user' ? 'bg-blue-100' : 'bg-gray-100'}`}>
+                  <p className="font-semibold text-black">{item.role === 'user' ? 'You:' : 'AI:'}</p>
+                  <div
+                    className="text-black"
+                    dangerouslySetInnerHTML={{ __html: converter.makeHtml(item.parts[0].text) }}
+                  />
                 </div>
               </div>
             ))}
