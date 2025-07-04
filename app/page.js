@@ -20,6 +20,19 @@ export default function Home() {
     scrollToBottom()
   }, [history]);
 
+  useEffect(() => {
+    const savedHistory = localStorage.getItem('chatHistory')
+    if (savedHistory) {
+      setHistory(JSON.parse(savedHistory))
+    }
+  }, [])
+
+  useEffect(() => {
+    if (history.length > 0) {
+      localStorage.setItem('chatHistory', JSON.stringify(history))
+    }
+  }, [history])
+
   const handleSubmit = async () => {
     if (!prompt.trim()) return
 
