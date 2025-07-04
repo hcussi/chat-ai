@@ -115,7 +115,10 @@ This phase involved several cycles of user feedback and bug fixing.
 -   **Action:** Refactored the layout to have a main title and a three-column layout below it.
 -   **Request:** Move the status info to the right column.
 -   **Action:** Moved the status component to the right column.
--   **Commit:** `feat(layout): move title and status bar` (This will be the next commit)
+-   **Commit:** `feat(layout): move title and status bar`
+-   **Request:** Add titles to the chat list and prompt input.
+-   **Action:** Added titles to the left and center columns.
+-   **Commit:** `feat(layout): add titles to columns` (This will be the next commit)
 
 ### 6. Documentation
 

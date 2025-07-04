@@ -174,9 +174,10 @@ export default function Home() {
       style={{ backgroundImage: "url('/background.jpg')" }} // Replace with your image URL
     >
       <h1 className="text-4xl font-bold mb-4 text-center text-white">Chat AI</h1>
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-3 gap-8">
         {loading && <Loading />}
-        <div className="col-span-1">
+        <div className="col-span-1 p-4 pr-5">
+          <h2 className="text-lg font-bold mb-2 text-center text-white">Chats</h2>
           <button onClick={createNewChat} className="w-full p-2 bg-blue-500 text-white rounded-lg mb-4">
             New Chat
           </button>
@@ -186,10 +187,11 @@ export default function Home() {
             </div>
           ))}
         </div>
-        <div className="col-span-1 flex flex-col h-full">
+        <div className="col-span-1 flex flex-col h-full p-4 pr-5">
           {activeChat && (
             <>
               <div className="w-full bg-white bg-opacity-80 p-8 rounded-lg shadow-lg">
+                <h2 className="text-lg font-bold mb-2 text-center">Prompt</h2>
                 <Input
                   prompt={prompt}
                   setPrompt={setPrompt}
@@ -202,10 +204,10 @@ export default function Home() {
             </>
           )}
         </div>
-        <div className="col-span-1">
+        <div className="col-span-1 p-4 pr-5">
           {activeChat && activeChat.stats && (
             <div className="w-full bg-white bg-opacity-80 p-4 rounded-lg shadow-lg text-xs font-mono">
-              <h2 className="text-lg font-bold mb-2 text-center">Stats</h2>
+              <h2 className="text-lg font-bold mb-2 text-center">Status Information</h2>
               <div className="w-full bg-gray-800 text-white p-2 rounded-lg shadow-lg">
                 <div className="flex justify-between">
                   <p>Model:</p>
