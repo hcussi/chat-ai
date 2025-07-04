@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect, KeyboardEventHandler } from 'react'
-import Header from '../components/Header'
 import Input from '../components/Input'
 import History from '../components/History'
 import Loading from '../components/Loading'
@@ -171,38 +170,68 @@ export default function Home() {
 
   return (
     <main
-      className="min-h-screen bg-cover bg-center grid grid-cols-3 gap-4 p-4"
+      className="min-h-screen bg-cover bg-center p-4"
       style={{ backgroundImage: "url('/background.jpg')" }} // Replace with your image URL
     >
-      {loading && <Loading />}
-      <div className="col-span-1">
-        <button onClick={createNewChat} className="w-full p-2 bg-blue-500 text-white rounded-lg mb-4">
-          New Chat
-        </button>
-        {chats.sort((a, b) => a.createdAt - b.createdAt).map(chat => (
-          <div key={chat.id} onClick={() => setActiveChatId(chat.id)} className={`p-2 rounded-lg cursor-pointer ${activeChatId === chat.id ? 'bg-blue-200' : ''}`}>
-            <ChatManager chatName={chat.name} setChatName={(name) => setChatName(name)} clearChat={() => clearChat(chat.id)} />
-          </div>
-        ))}
-      </div>
-      <div className="col-span-1 flex flex-col h-full">
-        {activeChat && (
-          <>
-            <Header stats={activeChat.stats} />
-            <div className="w-full bg-white bg-opacity-80 p-8 rounded-lg shadow-lg mt-4">
-              <Input
-                prompt={prompt}
-                setPrompt={setPrompt}
-                loading={loading}
-                handleSubmit={handleSubmit}
-                handleKeyDown={handleKeyDown}
-              />
+      <h1 className="text-4xl font-bold mb-4 text-center text-white">Chat AI</h1>
+      <div className="grid grid-cols-3 gap-4">
+        {loading && <Loading />}
+        <div className="col-span-1">
+          <button onClick={createNewChat} className="w-full p-2 bg-blue-500 text-white rounded-lg mb-4">
+            New Chat
+          </button>
+          {chats.sort((a, b) => a.createdAt - b.createdAt).map(chat => (
+            <div key={chat.id} onClick={() => setActiveChatId(chat.id)} className={`p-2 rounded-lg cursor-pointer ${activeChatId === chat.id ? 'bg-blue-200' : ''}`}>
+              <ChatManager chatName={chat.name} setChatName={(name) => setChatName(name)} clearChat={() => clearChat(chat.id)} />
             </div>
-            <History history={activeChat.history} loading={loading} />
-          </>
-        )}
+          ))}
+        </div>
+        <div className="col-span-1 flex flex-col h-full">
+          {activeChat && (
+            <>
+              <div className="w-full bg-white bg-opacity-80 p-8 rounded-lg shadow-lg">
+                <Input
+                  prompt={prompt}
+                  setPrompt={setPrompt}
+                  loading={loading}
+                  handleSubmit={handleSubmit}
+                  handleKeyDown={handleKeyDown}
+                />
+              </div>
+              <History history={activeChat.history} loading={loading} />
+            </>
+          )}
+        </div>
+        <div className="col-span-1">
+          {activeChat && activeChat.stats && (
+            <div className="w-full bg-white bg-opacity-80 p-4 rounded-lg shadow-lg text-xs font-mono">
+              <h2 className="text-lg font-bold mb-2 text-center">Stats</h2>
+              <div className="w-full bg-gray-800 text-white p-2 rounded-lg shadow-lg">
+                <div className="flex justify-between">
+                  <p>Model:</p>
+                  <p>{activeChat.stats.model}</p>
+                </div>
+                <div className="flex justify-between">
+                  <p>Time:</p>
+                  <p>{activeChat.stats.time}ms</p>
+                </div>
+                <div className="flex justify-between">
+                  <p>Input Tokens:</p>
+                  <p>{activeChat.stats.inputTokens}</p>
+                </div>
+                <div className="flex justify-between">
+                  <p>Output Tokens:</p>
+                  <p>{activeChat.stats.outputTokens}</p>
+                </div>
+                <div className="flex justify-between">
+                  <p>Total Tokens:</p>
+                  <p>{activeChat.stats.totalTokens}</p>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
-      <div className="col-span-1"></div>
     </main>
   )
 }
