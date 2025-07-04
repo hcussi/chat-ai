@@ -1,17 +1,17 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import Home from '../page'
 
-global.fetch = jest.fn()
+global.fetch = jest.fn() as jest.Mock
 
 // Mock scrollIntoView
 window.HTMLElement.prototype.scrollIntoView = jest.fn()
 
 // Mock localStorage
 const localStorageMock = (() => {
-  let store = {}
+  let store: { [key: string]: string } = {}
   return {
-    getItem: (key) => store[key] || null,
-    setItem: (key, value) => {
+    getItem: (key: string) => store[key] || null,
+    setItem: (key: string, value: string) => {
       store[key] = value.toString()
     },
     clear: () => {
@@ -23,7 +23,7 @@ Object.defineProperty(window, 'localStorage', { value: localStorageMock })
 
 describe('Home', () => {
   beforeEach(() => {
-    fetch.mockClear()
+    (fetch as jest.Mock).mockClear()
     localStorage.clear()
     jest.spyOn(localStorage, 'setItem')
   })
@@ -41,7 +41,7 @@ describe('Home', () => {
 
   it('updates the prompt when the user types in the textarea', () => {
     render(<Home />)
-    const textarea = screen.getByPlaceholderText(/enter your prompt/i)
+    const textarea = screen.getByPlaceholderText(/enter your prompt/i) as HTMLTextAreaElement
     fireEvent.change(textarea, { target: { value: 'Hello, world!' } })
     expect(textarea.value).toBe('Hello, world!')
   })
@@ -80,8 +80,8 @@ describe('Home', () => {
         totalTokens: 2,
       },
       time: 100,
-    }
-    fetch.mockResolvedValueOnce({
+    };
+    (fetch as jest.Mock).mockResolvedValueOnce({
       ok: true,
       json: async () => mockResponse,
     })
@@ -99,7 +99,7 @@ describe('Home', () => {
   })
 
   it('shows an error message if the fetch fails', async () => {
-    fetch.mockRejectedValueOnce(new Error('API is down'))
+    (fetch as jest.Mock).mockRejectedValueOnce(new Error('API is down'))
 
     render(<Home />)
     const textarea = screen.getByPlaceholderText(/enter your prompt/i)
@@ -122,8 +122,8 @@ describe('Home', () => {
         totalTokens: 2,
       },
       time: 100,
-    }
-    fetch.mockResolvedValueOnce({
+    };
+    (fetch as jest.Mock).mockResolvedValueOnce({
       ok: true,
       json: async () => mockResponse,
     })
@@ -153,8 +153,8 @@ describe('Home', () => {
         totalTokens: 2,
       },
       time: 100,
-    }
-    fetch.mockResolvedValueOnce({
+    };
+    (fetch as jest.Mock).mockResolvedValueOnce({
       ok: true,
       json: async () => mockResponse,
     })
@@ -181,8 +181,8 @@ describe('Home', () => {
     localStorage.setItem(
       'chatHistory',
       JSON.stringify([
-        { role: 'user', parts: [{ text: 'previous prompt' }] },
-        { role: 'model', parts: [{ text: 'previous response' }] },
+        { role: 'user', parts: [{ text: 'previous prompt' }], timestamp: '12:00:00' },
+        { role: 'model', parts: [{ text: 'previous response' }], timestamp: '12:00:01' },
       ])
     )
 

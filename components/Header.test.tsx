@@ -3,7 +3,7 @@ import Header from './Header'
 
 describe('Header', () => {
   it('renders the title', () => {
-    render(<Header />)
+    render(<Header stats={null} />)
     expect(screen.getByRole('heading', { name: /chat ai/i })).toBeInTheDocument()
   })
 
@@ -24,7 +24,7 @@ describe('Header', () => {
   })
 
   it('does not render the stats when not provided', () => {
-    render(<Header />)
+    render(<Header stats={null} />)
     expect(screen.queryByText(/model:/i)).not.toBeInTheDocument()
   })
 })

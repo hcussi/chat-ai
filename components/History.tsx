@@ -1,9 +1,19 @@
 import showdown from 'showdown'
 import Loading from './Loading'
+import { Content } from '@google/generative-ai'
 
 const converter = new showdown.Converter()
 
-export default function History({ history, loading }) {
+interface HistoryItem extends Content {
+  timestamp: string;
+}
+
+interface HistoryProps {
+  history: HistoryItem[];
+  loading: boolean;
+}
+
+export default function History({ history, loading }: HistoryProps) {
   return (
     <div className="w-full bg-white bg-opacity-80 p-8 rounded-lg shadow-lg mt-4 flex-grow overflow-y-auto">
       <div className="flex-grow">
@@ -16,7 +26,7 @@ export default function History({ history, loading }) {
               </div>
               <div
                 className="text-black"
-                dangerouslySetInnerHTML={{ __html: converter.makeHtml(item.parts[0].text) }}
+                dangerouslySetInnerHTML={{ __html: converter.makeHtml(item.parts[0].text || '') }}
               />
             </div>
           </div>

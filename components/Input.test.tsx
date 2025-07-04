@@ -3,14 +3,14 @@ import Input from './Input'
 
 describe('Input', () => {
   it('renders the textarea and button', () => {
-    render(<Input />)
+    render(<Input prompt="" setPrompt={() => {}} loading={false} handleSubmit={() => {}} handleKeyDown={() => {}} />)
     expect(screen.getByPlaceholderText(/enter your prompt/i)).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /send/i })).toBeInTheDocument()
   })
 
   it('calls the setPrompt function when the user types in the textarea', () => {
     const setPrompt = jest.fn()
-    render(<Input setPrompt={setPrompt} />)
+    render(<Input prompt="" setPrompt={setPrompt} loading={false} handleSubmit={() => {}} handleKeyDown={() => {}} />)
     const textarea = screen.getByPlaceholderText(/enter your prompt/i)
     fireEvent.change(textarea, { target: { value: 'Hello, world!' } })
     expect(setPrompt).toHaveBeenCalledWith('Hello, world!')
@@ -18,7 +18,7 @@ describe('Input', () => {
 
   it('calls the handleSubmit function when the button is clicked', () => {
     const handleSubmit = jest.fn()
-    render(<Input handleSubmit={handleSubmit} prompt="test" />)
+    render(<Input prompt="test" setPrompt={() => {}} loading={false} handleSubmit={handleSubmit} handleKeyDown={() => {}} />)
     const button = screen.getByRole('button', { name: /send/i })
     fireEvent.click(button)
     expect(handleSubmit).toHaveBeenCalled()
@@ -26,7 +26,7 @@ describe('Input', () => {
 
   it('calls the handleKeyDown function when a key is pressed in the textarea', () => {
     const handleKeyDown = jest.fn()
-    render(<Input handleKeyDown={handleKeyDown} />)
+    render(<Input prompt="" setPrompt={() => {}} loading={false} handleSubmit={() => {}} handleKeyDown={handleKeyDown} />)
     const textarea = screen.getByPlaceholderText(/enter your prompt/i)
     fireEvent.keyDown(textarea, { key: 'Enter', code: 'Enter' })
     expect(handleKeyDown).toHaveBeenCalled()

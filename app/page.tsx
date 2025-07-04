@@ -1,16 +1,29 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, KeyboardEventHandler } from 'react'
 import Header from '../components/Header'
 import Input from '../components/Input'
 import History from '../components/History'
 import Loading from '../components/Loading'
+import { Content } from '@google/generative-ai'
+
+interface HistoryItem extends Content {
+  timestamp: string;
+}
+
+interface Stats {
+  model: string;
+  time: number;
+  inputTokens: number;
+  outputTokens: number;
+  totalTokens: number;
+}
 
 export default function Home() {
-  const [prompt, setPrompt] = useState('')
-  const [history, setHistory] = useState([])
-  const [loading, setLoading] = useState(false)
-  const [stats, setStats] = useState(null)
+  const [prompt, setPrompt] = useState<string>('')
+  const [history, setHistory] = useState<HistoryItem[]>([])
+  const [loading, setLoading] = useState<boolean>(false)
+  const [stats, setStats] = useState<Stats | null>(null)
 
   useEffect(() => {
     const savedHistory = localStorage.getItem('chatHistory')
@@ -70,7 +83,7 @@ export default function Home() {
         totalTokens: data.usage.totalTokens,
         time: data.time,
       })
-    } catch (error) {
+    } catch (error: any) {
       const modelTimestamp = new Date().toLocaleTimeString([], { minute: '2-digit', hour: '2-digit', second: '2-digit', hour12: false })
       const updatedHistory = [...newHistory, { role: 'model', parts: [{ text: error.message }], timestamp: modelTimestamp }]
       setHistory(updatedHistory)
@@ -79,7 +92,7 @@ export default function Home() {
     }
   }
 
-  const handleKeyDown = (e) => {
+  const handleKeyDown: KeyboardEventHandler<HTMLTextAreaElement> = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
       handleSubmit()
@@ -104,7 +117,7 @@ export default function Home() {
             handleKeyDown={handleKeyDown}
           />
         </div>
-        <History history={history} />
+        <History history={history} loading={loading} />
       </div>
       <div className="col-span-1"></div>
     </main>

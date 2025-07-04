@@ -1,9 +1,19 @@
-export default function Input({ prompt = '', setPrompt, loading, handleSubmit, handleKeyDown }) {
+import { KeyboardEventHandler } from 'react';
+
+interface InputProps {
+  prompt: string;
+  setPrompt: (prompt: string) => void;
+  loading: boolean;
+  handleSubmit: () => void;
+  handleKeyDown: KeyboardEventHandler<HTMLTextAreaElement>;
+}
+
+export default function Input({ prompt, setPrompt, loading, handleSubmit, handleKeyDown }: InputProps) {
   return (
     <div className="w-full mt-4">
       <textarea
         className="w-full p-4 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
-        rows="4"
+        rows={4}
         value={prompt}
         onChange={(e) => setPrompt(e.target.value)}
         onKeyDown={handleKeyDown}
