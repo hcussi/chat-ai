@@ -29,6 +29,15 @@ You can start editing the page by modifying `app/page.js`. The page auto-updates
 
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
+## Features
+
+-   **Conversational AI:** Engage in natural conversations with the Google Gemini API.
+-   **Multi-Chat Management:** Create, rename, and switch between multiple chat sessions.
+-   **Persistent History:** Your conversations are saved to your browser's local storage, so you can pick up where you left off.
+-   **Markdown Rendering:** The AI's responses are rendered as HTML, allowing for formatted text, lists, and other Markdown features.
+-   **Usage Statistics:** See real-time statistics for each chat, including the model used, response time, and token usage.
+-   **Responsive Design:** The application is designed to be used on a variety of screen sizes.
+
 ## Project Documents
 
 This project includes the following documents to provide a comprehensive overview of the development process and product requirements:
