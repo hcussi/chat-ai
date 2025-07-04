@@ -89,6 +89,11 @@ This phase involved several cycles of user feedback and bug fixing.
 -   **Action:** Installed the `showdown` library and used it to convert the response text to HTML before rendering it with `dangerouslySetInnerHTML`.
 -   **Commit:** `feat: add markdown parser and fix font color`
 
+### 6. Documentation
+
+-   **Request:** Generate a `PRD.md` file based on the project.
+-   **Action:** Created a Product Requirements Document in Markdown format, summarizing the application's features and requirements.
+
 ## Final State
 
 The application is fully functional as per the final set of requirements. It demonstrates a complete development lifecycle, including planning, implementation, iterative feedback, debugging, and feature enhancement, all driven by an AI assistant.
