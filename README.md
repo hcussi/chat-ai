@@ -27,6 +27,14 @@ You can start editing the page by modifying `app/page.js`. The page auto-updates
 
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
+## Project Documents
+
+This project includes the following documents to provide a comprehensive overview of the development process and product requirements:
+
+-   **`plan.md`:** This document outlines the initial plan for the project, including the technical stack, a summary of the application, and a list of requirements.
+-   **`PRD.md`:** This is the Product Requirements Document, which provides a detailed description of the application's features and functionality.
+-   **`GEMINI.md`:** This document is a chronicle of the development process, including the prompts and feedback provided to the Gemini AI assistant, and the actions taken by the AI to build the application.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
