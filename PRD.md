@@ -47,4 +47,4 @@ The primary goal of this product is to provide a simple, intuitive, and responsi
 -   **User Authentication:** Allow users to create accounts and save their chat history.
 -   **Multiple Chats:** Allow users to have multiple conversations with the AI at the same time.
 -   **Context Caching:** Implement explicit context caching to reduce latency and cost for conversations that revolve around a large, predefined document.
--   **Streaming Responses:** Stream the AI's responses to the user as they are generated, rather than waiting for the entire response to be complete.
+

@@ -121,7 +121,12 @@ This phase involved several cycles of user feedback and bug fixing.
 -   **Commit:** `feat(layout): add titles to columns`
 -   **Request:** Add a distinct style for the currently selected chat.
 -   **Action:** Added a blue background and a white border to the selected chat.
--   **Commit:** `style: add selected chat style` (This will be the next commit)
+-   **Commit:** `style: add selected chat style`
+-   **Request:** Implement streaming responses.
+-   **Action:** Modified the backend and frontend to handle streaming responses.
+-   **Request:** Revert the streaming responses feature.
+-   **Action:** Reverted the changes to the backend and frontend.
+-   **Commit:** `revert: remove streaming response feature` (This will be the next commit)
 
 ### 6. Documentation
 
