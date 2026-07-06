@@ -19,7 +19,13 @@ npx jest components/Input.test.tsx   # run a single test file
 npx jest -t "renders"                # run tests matching a name
 ```
 
-Node version is pinned in `.nvmrc` (20.11.0); CI runs `npm ci && npm test` on push/PR to `main`. **Use Node 20** (`nvm use`): on Node 25+ the dev/build server 500s with `localStorage.getItem is not a function` because `app/page.tsx` reads `localStorage` and newer Node exposes a broken global `localStorage` during SSR. See `.claude/skills/run/SKILL.md` for the full launch recipe.
+Node version is pinned in `.nvmrc` (25.2.1); CI runs `npm ci && npm test` on push/PR to `main`.
+
+Node 21+ exposes a global `localStorage` server-side whose methods are absent (throw during SSR). Two consequences, both already handled:
+- The `dev` script sets `NODE_OPTIONS=--no-experimental-webstorage` because Next.js's dev-tools `DevOverlay` reads `localStorage` during SSR and 500s otherwise. Keep that flag on `next dev`; `build`/`start` don't need it (no DevOverlay in production).
+- The app's own `localStorage` reads/writes in `app/page.tsx` are guarded with `typeof window === 'undefined'` early-returns. Keep that guard on any new `localStorage`/`window`/`document` use.
+
+See `.claude/skills/run/SKILL.md` for the full launch recipe.
 
 ## Environment
 

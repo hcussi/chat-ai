@@ -7,15 +7,19 @@ description: Launch and drive the Chat AI Next.js app (dev server + browser smok
 
 Next.js 15 (App Router) chat UI backed by the Google Gemini API. This skill launches the dev server and drives it end-to-end (prompt in, AI reply + token stats out).
 
-## Critical: use Node 20
+## Node version
 
-The app **500s on Node 21+** (including Node 25) with `localStorage.getItem is not a function`. `app/page.tsx` reads `localStorage`, and newer Node exposes a broken global `localStorage` stub during SSR; on Node 20 there is no server-side `localStorage`, so the client-only `useEffect` path works. The shell may default to a newer Node, so switch first:
+Pinned to **Node 25.2.1** in `.nvmrc`; `nvm use` picks it up.
 
 ```bash
 export NVM_DIR="$HOME/.nvm"; . "$NVM_DIR/nvm.sh"
-nvm use 20.11.1   # any 20.x; matches .nvmrc
-node -v           # confirm v20.x before launching
+nvm use           # reads .nvmrc (25.2.1)
+node -v
 ```
+
+Node 21+ exposes a global `localStorage` server-side whose methods are absent (throw during SSR). This is already handled, so just use `npm run dev` — but if you see a `localStorage.getItem is not a function` 500, this is why:
+- The `dev` script sets `NODE_OPTIONS=--no-experimental-webstorage`. Next.js's dev-tools `DevOverlay` reads `localStorage` during SSR and 500s without it. Do not run `next dev` directly on Node 25 without that flag.
+- The app's own `localStorage` use in `app/page.tsx` is guarded with `typeof window === 'undefined'`. A new unguarded `localStorage`/`window`/`document` access would reintroduce the crash.
 
 ## Prerequisites
 

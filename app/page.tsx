@@ -34,6 +34,7 @@ export default function Home() {
   const [loading, setLoading] = useState<boolean>(false)
 
   useEffect(() => {
+    if (typeof window === 'undefined') return
     const savedChats = localStorage.getItem('chats')
     if (savedChats) {
       setChats(JSON.parse(savedChats))
@@ -55,12 +56,14 @@ export default function Home() {
   }, [])
 
   useEffect(() => {
+    if (typeof window === 'undefined') return
     if (chats.length > 0) {
       localStorage.setItem('chats', JSON.stringify(chats))
     }
   }, [chats])
 
   useEffect(() => {
+    if (typeof window === 'undefined') return
     if (activeChatId) {
       localStorage.setItem('activeChatId', activeChatId)
     }
