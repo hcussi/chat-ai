@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-Chat AI is a Next.js (App Router) single-page chat interface backed by the Google Gemini API. The UI is a three-column layout: chat list (left), prompt + conversation (center), and per-chat usage stats (right). All chat state lives client-side in `localStorage`; there is no database or auth.
+Chat AI is a Next.js (App Router) single-page chat interface backed by the Google Gemini API. The UI is a two-pane chat shell: a sidebar of chats (left) and a conversation pane (right) with a header showing per-chat usage stats, a scrolling message list of chat bubbles, and a sticky composer. All chat state lives client-side in `localStorage`; there is no database or auth.
 
 ## Commands
 
@@ -33,7 +33,7 @@ Create `.env.local` with both variables (the API route reads them at request tim
 
 ```
 GEMINI_API_KEY=YOUR_API_KEY_HERE
-GEMINI_MODEL=gemini-1.5-flash
+GEMINI_MODEL=gemini-2.5-flash
 ```
 
 ## Architecture
@@ -46,7 +46,9 @@ GEMINI_MODEL=gemini-1.5-flash
 
 **Request flow.** `handleSubmit` optimistically appends the user message, then POSTs `{ prompt, history }` to `/api/chat`. The route (`app/api/chat/route.ts`) is a Node server route that instantiates the Gemini client, calls `model.startChat({ history }).sendMessage(prompt)`, and returns `{ text, model, usage, time }`. Conversational context is preserved by sending the full prior history (minus the just-added message) on every request. Errors are surfaced by rendering the error message as an assistant turn.
 
-**Markdown.** Assistant responses are converted from Markdown to HTML with `showdown` and injected via `dangerouslySetInnerHTML` in `History.tsx`.
+**Markdown.** Assistant (AI) responses are converted from Markdown to HTML with `showdown` and injected via `dangerouslySetInnerHTML` in `History.tsx`; user messages render as plain text. Rendered-markdown styling lives under the `.md` class in `app/globals.css`.
+
+**UI / styling.** Tailwind **v4** via `@tailwindcss/postcss`. `app/globals.css` must start with `@import 'tailwindcss';` — the legacy `@tailwind base/components/utilities` directives silently drop token-based utilities (colors, spacing, radii) in v4, so the page renders with layout but no colors/spacing. `tailwind.config.js` is legacy and inert (v4 auto-detects content). Body font is Inter (`app/layout.tsx`). Light/dark theming is driven by `prefers-color-scheme` using `dark:` variants (v4's default media strategy), so there is no theme toggle. `components/Loading.tsx` is an inline "AI is thinking..." typing indicator rendered by `History.tsx`, not a full-screen overlay.
 
 ## Conventions
 
