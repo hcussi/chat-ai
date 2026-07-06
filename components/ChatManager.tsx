@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { FaPencilAlt, FaTrash } from 'react-icons/fa'
+import { FiEdit2, FiTrash2 } from 'react-icons/fi'
 
 interface ChatManagerProps {
   chatName: string;
@@ -23,31 +23,49 @@ export default function ChatManager({ chatName, setChatName, clearChat }: ChatMa
     }
   }
 
+  if (isEditing) {
+    return (
+      <form onSubmit={handleNameSubmit} onClick={(e) => e.stopPropagation()}>
+        <input
+          type="text"
+          value={name}
+          onChange={handleNameChange}
+          onBlur={() => setIsEditing(false)}
+          autoFocus
+          maxLength={50}
+          className="w-full rounded-md border border-indigo-400 bg-white px-2 py-1 text-sm text-zinc-900 outline-none focus:ring-2 focus:ring-indigo-500/30 dark:bg-zinc-900 dark:text-zinc-100"
+        />
+      </form>
+    )
+  }
+
   return (
-    <div className="w-full bg-white bg-opacity-80 p-4 rounded-lg shadow-lg">
-      {isEditing ? (
-        <form onSubmit={handleNameSubmit}>
-          <input
-            type="text"
-            value={name}
-            onChange={handleNameChange}
-            className="w-full p-2 border border-gray-300 rounded-lg"
-            maxLength={50}
-          />
-        </form>
-      ) : (
-        <div className="flex justify-between items-center">
-          <h2 className="text-lg font-bold">{chatName}</h2>
-          <div className="flex space-x-2">
-            <button onClick={() => setIsEditing(true)} aria-label="Edit chat name">
-              <FaPencilAlt className="h-5 w-5 text-gray-500" />
-            </button>
-            <button onClick={clearChat} data-testid="delete-button" aria-label="Delete chat">
-              <FaTrash className="h-5 w-5 text-red-500" />
-            </button>
-          </div>
-        </div>
-      )}
+    <div className="flex items-center justify-between gap-2">
+      <span className="truncate text-sm">{chatName}</span>
+      <div className="flex shrink-0 items-center gap-0.5 opacity-0 transition group-hover:opacity-100">
+        <button
+          onClick={(e) => {
+            e.stopPropagation()
+            setName(chatName)
+            setIsEditing(true)
+          }}
+          aria-label="Edit chat name"
+          className="rounded p-1 text-zinc-400 transition hover:bg-black/5 hover:text-zinc-600 dark:hover:bg-white/10 dark:hover:text-zinc-200"
+        >
+          <FiEdit2 className="h-3.5 w-3.5" />
+        </button>
+        <button
+          onClick={(e) => {
+            e.stopPropagation()
+            clearChat()
+          }}
+          data-testid="delete-button"
+          aria-label="Delete chat"
+          className="rounded p-1 text-zinc-400 transition hover:bg-red-500/10 hover:text-red-500"
+        >
+          <FiTrash2 className="h-3.5 w-3.5" />
+        </button>
+      </div>
     </div>
   )
 }

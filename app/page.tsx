@@ -1,9 +1,9 @@
 'use client'
 
 import { useState, useEffect, KeyboardEventHandler } from 'react'
+import { FiPlus } from 'react-icons/fi'
 import Input from '../components/Input'
 import History from '../components/History'
-import Loading from '../components/Loading'
 import ChatManager from '../components/ChatManager'
 import { Content } from '@google/generative-ai'
 
@@ -171,72 +171,90 @@ export default function Home() {
     }
   }
 
+  const sortedChats = [...chats].sort((a, b) => a.createdAt - b.createdAt)
+
   return (
-    <main
-      className="min-h-screen bg-cover bg-center p-4"
-      style={{ backgroundImage: "url('/background.jpg')" }} // Replace with your image URL
-    >
-      <h1 className="text-4xl font-bold mb-4 text-center text-white">Chat AI</h1>
-      <div className="grid grid-cols-3 gap-8">
-        {loading && <Loading />}
-        <div className="col-span-1 p-4 pr-5">
-          <h2 className="text-lg font-bold mb-2 text-center text-white">Chats</h2>
-          <button onClick={createNewChat} className="w-full p-2 bg-blue-500 text-white rounded-lg mb-4">
-            New Chat
-          </button>
-          {chats.sort((a, b) => a.createdAt - b.createdAt).map(chat => (
-            <div key={chat.id} onClick={() => setActiveChatId(chat.id)} className={`p-2 rounded-lg cursor-pointer ${activeChatId === chat.id ? 'bg-blue-500 text-white border-2 border-white' : ''}`}>
-              <ChatManager chatName={chat.name} setChatName={(name) => setChatName(name)} clearChat={() => clearChat(chat.id)} />
-            </div>
-          ))}
+    <div className="flex h-screen overflow-hidden bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
+      {/* Sidebar */}
+      <aside className="flex w-64 shrink-0 flex-col border-r border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900 md:w-72">
+        <div className="flex items-center gap-2.5 px-5 py-4">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-sm font-bold text-white">
+            AI
+          </div>
+          <h1 className="text-lg font-semibold tracking-tight">Chat AI</h1>
         </div>
-        <div className="col-span-1 flex flex-col h-full p-4 pr-5">
-          {activeChat && (
-            <>
-              <div className="w-full bg-white bg-opacity-80 p-8 rounded-lg shadow-lg">
-                <h2 className="text-lg font-bold mb-2 text-center">Prompt</h2>
-                <Input
-                  prompt={prompt}
-                  setPrompt={setPrompt}
-                  loading={loading}
-                  handleSubmit={handleSubmit}
-                  handleKeyDown={handleKeyDown}
+
+        <div className="px-3">
+          <button
+            onClick={createNewChat}
+            className="flex w-full items-center justify-center gap-2 rounded-lg border border-dashed border-zinc-300 px-3 py-2 text-sm font-medium text-zinc-600 transition hover:border-indigo-400 hover:text-indigo-600 dark:border-zinc-700 dark:text-zinc-300 dark:hover:border-indigo-500 dark:hover:text-indigo-400"
+          >
+            <FiPlus className="h-4 w-4" /> New Chat
+          </button>
+        </div>
+
+        <nav className="mt-3 flex-1 space-y-1 overflow-y-auto scrollbar-thin px-3 pb-4">
+          {sortedChats.map(chat => {
+            const isActive = activeChatId === chat.id
+            return (
+              <div
+                key={chat.id}
+                onClick={() => setActiveChatId(chat.id)}
+                className={`group cursor-pointer rounded-lg px-3 py-2 transition ${
+                  isActive
+                    ? 'bg-indigo-50 text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-300'
+                    : 'text-zinc-700 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800'
+                }`}
+              >
+                <ChatManager
+                  chatName={chat.name}
+                  setChatName={(name) => setChatName(name)}
+                  clearChat={() => clearChat(chat.id)}
                 />
               </div>
-              <History history={activeChat.history} loading={loading} />
-            </>
-          )}
-        </div>
-        <div className="col-span-1 p-4 pr-5">
-          {activeChat && activeChat.stats && (
-            <div className="w-full bg-white bg-opacity-80 p-4 rounded-lg shadow-lg text-xs font-mono">
-              <h2 className="text-lg font-bold mb-2 text-center">Status Information</h2>
-              <div className="w-full bg-gray-800 text-white p-2 rounded-lg shadow-lg">
-                <div className="flex justify-between">
-                  <p>Model:</p>
-                  <p>{activeChat.stats.model}</p>
-                </div>
-                <div className="flex justify-between">
-                  <p>Time:</p>
-                  <p>{activeChat.stats.time}ms</p>
-                </div>
-                <div className="flex justify-between">
-                  <p>Input Tokens:</p>
-                  <p>{activeChat.stats.inputTokens}</p>
-                </div>
-                <div className="flex justify-between">
-                  <p>Output Tokens:</p>
-                  <p>{activeChat.stats.outputTokens}</p>
-                </div>
-                <div className="flex justify-between">
-                  <p>Total Tokens:</p>
-                  <p>{activeChat.stats.totalTokens}</p>
-                </div>
-              </div>
+            )
+          })}
+        </nav>
+      </aside>
+
+      {/* Main conversation area */}
+      <main className="flex min-w-0 flex-1 flex-col">
+        <header className="flex items-center justify-between gap-4 border-b border-zinc-200 px-6 py-3 dark:border-zinc-800">
+          <h2 className="truncate text-sm font-medium text-zinc-500 dark:text-zinc-400">
+            {activeChat?.name}
+          </h2>
+          {activeChat?.stats && (
+            <div className="flex flex-wrap items-center justify-end gap-1.5 text-xs">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-zinc-100 px-2.5 py-1 font-medium text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                {activeChat.stats.model}
+              </span>
+              <span className="rounded-full bg-zinc-100 px-2.5 py-1 font-medium text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300">
+                {activeChat.stats.time} ms
+              </span>
+              <span
+                className="rounded-full bg-zinc-100 px-2.5 py-1 font-medium text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300"
+                title={`Input ${activeChat.stats.inputTokens} / Output ${activeChat.stats.outputTokens}`}
+              >
+                {activeChat.stats.totalTokens} tokens
+              </span>
             </div>
           )}
-        </div>
-      </div>
-    </main>
+        </header>
+
+        {activeChat && (
+          <>
+            <History history={activeChat.history} loading={loading} />
+            <Input
+              prompt={prompt}
+              setPrompt={setPrompt}
+              loading={loading}
+              handleSubmit={handleSubmit}
+              handleKeyDown={handleKeyDown}
+            />
+          </>
+        )}
+      </main>
+    </div>
   )
 }
