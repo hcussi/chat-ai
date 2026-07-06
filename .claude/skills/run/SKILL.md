@@ -73,7 +73,22 @@ Then drive the UI in a browser (Playwright MCP) to confirm the full flow:
 
 1. `browser_navigate` to `http://localhost:3001/`.
 2. `browser_snapshot`, type a prompt into the "Enter your prompt..." textbox, submit with Enter.
-3. `browser_snapshot` / `browser_take_screenshot` and **look at it** — you should see the user turn, the AI reply, and the right-hand Status panel populated (model, time, input/output/total tokens). A blank frame or missing stats = failure.
+3. `browser_snapshot` / `browser_take_screenshot` and **look at it** — you should see the user turn (indigo bubble, right), the AI reply (neutral bubble, left), and the header stat chips populated (model, time, total tokens). A blank frame or missing stats = failure.
+
+To check dark mode, emulate the media query (Playwright): `await page.emulateMedia({ colorScheme: 'dark' })` before screenshotting. The theme responds to `prefers-color-scheme`, not a class toggle.
+
+## Styling (Tailwind v4)
+
+The project uses **Tailwind v4** (`@tailwindcss/postcss`). `app/globals.css` must start with `@import 'tailwindcss';` — **not** the legacy `@tailwind base/components/utilities` directives. In v4 those directives skip loading the default theme, so token-based utilities (`bg-*`, `text-*`, `px-*`, `w-72`, `rounded-lg`, `text-sm`) silently do not generate, while structural ones (`flex`, `border`, `rounded-full`) still do.
+
+Symptom: the page renders with correct **layout** but **no colors, spacing, or rounding**. Diagnose by size — a healthy `layout.css` is ~30KB+; a broken one is ~12KB:
+
+```bash
+CSS=$(curl -s http://localhost:3001/ | grep -oE '/_next/static/css/[^"]+\.css' | head -1)
+curl -s "http://localhost:3001$CSS" | grep -c "bg-white\|bg-indigo"   # 0 => theme not loaded
+```
+
+`tailwind.config.js` is legacy/inert under v4 (not loaded without an `@config` directive); content is auto-detected.
 
 ## Notes
 
